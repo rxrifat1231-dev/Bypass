@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tenka Link Bypasser Tool</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #08080e;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            width: 100%;
+            max-width: 440px;
+            background: rgba(16, 16, 28, 0.95);
+            backdrop-filter: blur(16px);
+            padding: 26px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #38bdf8;
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            flex: 1;
+            padding: 12px 14px;
+            background: #1e1e2f;
+            border: 1px solid #333;
+            color: #fff;
+            border-radius: 10px;
+            font-size: 15px;
+            outline: none;
+            transition: 0.3s;
+        }
+        input[type="text"]:focus {
+            border-color: #38bdf8;
+            box-shadow: 0 0 8px rgba(56, 189, 248, 0.3);
+        }
+        .btn {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        .result-box {
+            background: #14141f;
+            border-left: 4px solid #10b981;
+            padding: 16px;
+            border-radius: 10px;
+            margin-top: 15px;
+            display: none;
+        }
+        .result-box h4 {
+            color: #34d399;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        .link-display {
+            background: #1e1e2f;
+            padding: 10px;
+            border-radius: 8px;
+            color: #38bdf8;
+            word-break: break-all;
+            font-size: 14px;
+            margin-bottom: 12px;
+            border: 1px solid #2d2d42;
+        }
+        .copy-btn {
+            background-color: #10b981;
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+        .copy-btn:hover {
+            background-color: #059669;
+        }
+        .copy-btn.copied {
+            background-color: #06b6d4 !important;
+        }
+        .meta-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            color: #94a3b8;
+        }
+        .status-text {
+            color: #94a3b8;
+            font-size: 13px;
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🔗 Tenka Link Bypasser</h2>
+    <div class="input-group">
+        <input type="text" id="urlInput" placeholder="শর্ট লিংক এখানে দিন...">
+        <button class="btn" onclick="processBypass()">Submit</button>
+    </div>
+
+    <div class="status-text" id="statusText"></div>
+
+    <div id="resultContainer" class="result-box">
+        <h4>Original Link:</h4>
+        <div class="link-display" id="originalLinkView"></div>
+
+        <h4>Bypassed Link:</h4>
+        <div class="link-display" id="bypassedLinkView"></div>
+        
+        <button id="copyBtn" class="btn copy-btn" onclick="copyBypassedLink()">Copy Bypassed Link</button>
+        
+        <div class="meta-info">
+            <span id="timeText">Time Taken : 0 Seconds</span>
+            <span style="color: #10b981;">● Success</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    async function processBypass() {
+        let inputUrl = document.getElementById('urlInput').value.trim();
+        const resultContainer = document.getElementById('resultContainer');
+        const originalLinkView = document.getElementById('originalLinkView');
+        const bypassedLinkView = document.getElementById('bypassedLinkView');
+        const statusText = document.getElementById('statusText');
+        const timeText = document.getElementById('timeText');
+
+        if (!inputUrl) {
+            alert('দয়া করে একটি লিংক দিন!');
+            return;
+        }
+
+        if (!inputUrl.startsWith('http://') && !inputUrl.startsWith('https://')) {
+            inputUrl = 'https://' + inputUrl;
+        }
+
+        statusText.textContent = "Processing...";
+        resultContainer.style.display = "none";
+
+        let startTime = performance.now();
+
+        try {
+            const targetApiUrl = `https://tenka-bypass.vercel.app/?url=${encodeURIComponent(inputUrl)}`;
+            const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetApiUrl)}`;
+            
+            const response = await fetch(proxyUrl);
+            const data = await response.json();
+
+            let endTime = performance.now();
+            let totalSeconds = ((endTime - startTime) / 1000).toFixed(1);
+
+            originalLinkView.textContent = inputUrl;
+            
+            if (data && data.result) {
+                bypassedLinkView.textContent = data.result;
+            } else {
+                bypassedLinkView.textContent = "লিংক বাইপাস করা যায়নি!";
+            }
+            
+            timeText.textContent = `Time Taken : ${totalSeconds} Seconds`;
+            statusText.textContent = "";
+            resultContainer.style.display = "block";
+
+        } catch (error) {
+            let endTime = performance.now();
+            let totalSeconds = ((endTime - startTime) / 1000).toFixed(1);
+
+            originalLinkView.textContent = inputUrl;
+            bypassedLinkView.textContent = "Error: সার্ভার কানেক্ট করতে সমস্যা হচ্ছে।";
+            timeText.textContent = `Time Taken : ${totalSeconds} Seconds`;
+            statusText.textContent = "";
+            resultContainer.style.display = "block";
+        }
+    }
+
+    function copyBypassedLink() {
+        const textToCopy = document.getElementById('bypassedLinkView').textContent;
+        const copyBtn = document.getElementById('copyBtn');
+
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            copyBtn.textContent = "Copied! ✅";
+            copyBtn.classList.add('copied');
+            
+            setTimeout(() => {
+                copyBtn.textContent = "Copy Bypassed Link";
+                copyBtn.classList.remove('copied');
+            }, 2000);
+        }).catch(err => {
+            alert('কপি করতে সমস্যা হয়েছে!');
+        });
+    }
+</script>
+
+</body>
+</html>
