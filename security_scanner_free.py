@@ -367,4 +367,4 @@ def scan_file(file_path: str) -> Dict[str, Any]:
 
 
 # টোকেনটি নিরাপদ রাখার জন্য এনভায়রনমেন্ট ভেরিয়েবল বা ফলব্যাক হিসেবে সেট করা হলো
-BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "8923808337:AAGAaq0XkfLJ53YTJd17tIhZz_eNBD_qhZk")
+BOT_TOKEN = os.getenv("8923808337:AAGAaq0XkfLJ53YTJd17tIhZz_eNBD_qhZk", "8923808337:AAGAaq0XkfLJ53YTJd17tIhZz_eNBD_qhZk")
