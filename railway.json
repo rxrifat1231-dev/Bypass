@@ -25,6 +25,11 @@
       "hwid": [
         "ANY"
       ]
+    },
+    "DP-T84QCK": {
+      "status": "approved",
+      "max_devices": 1,
+      "expiry_date": "2026-08-27"
     }
   }
 }
